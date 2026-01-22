@@ -13,16 +13,31 @@
 
 ## Technology Stack
 
-|Component|Technology            |Notes                       |
-|---------|----------------------|----------------------------|
-|Framework|Symfony 7.x           |PHP 8.3+                    |
-|Database |mySQL            |Complex queries, time-series|
-|Cache    |Redis 7               |Sessions, real-time state   |
+### Backend
+
+|Component|Technology               |Notes                       |
+|---------|-------------------------|----------------------------|
+|Framework|Symfony 7.x              |PHP 8.3+                    |
+|Database |MySQL                    |Complex queries, time-series|
+|Cache    |Redis 7                  |Sessions, real-time state   |
 |Queue    |Symfony Messenger + Redis|Async processing            |
-|WebSocket|Mercure               |Native Symfony integration  |
-|Auth     |LexikJWT              |API token auth              |
-|Email    |Symfony Mailer        |Start SMTP, upgrade later   |
-|API Docs |NelmioApiDoc          |OpenAPI spec generation     |
+|WebSocket|Mercure                  |Native Symfony integration  |
+|Auth     |LexikJWT                 |API token auth              |
+|Email    |Symfony Mailer           |Start SMTP, upgrade later   |
+|API Docs |NelmioApiDoc             |OpenAPI spec generation     |
+
+### Frontend
+
+|Component  |Technology           |Notes                          |
+|-----------|---------------------|-------------------------------|
+|Framework  |Vue.js 3.x           |Composition API, TypeScript    |
+|Build Tool |Vite                 |Fast HMR, optimized builds     |
+|State      |Pinia                |Vue 3 recommended state manager|
+|Router     |Vue Router 4         |SPA navigation                 |
+|HTTP Client|Axios                |API communication              |
+|UI Library |PrimeVue             |Enterprise Vue components      |
+|Testing    |Vitest + Vue Test Utils|Unit and component tests     |
+|E2E Testing|Cypress              |Functional/integration tests   |
 
 -----
 
@@ -292,22 +307,22 @@ A task is complete when:
 
 ```
 teleops-scheduler/
-├── config/
-│   ├── packages/
-│   │   ├── doctrine.yaml
-│   │   ├── lexik_jwt_authentication.yaml
-│   │   ├── mercure.yaml
-│   │   ├── messenger.yaml
-│   │   └── security.yaml
-│   ├── routes/
-│   │   ├── api_operators.yaml
-│   │   ├── api_clients.yaml
-│   │   └── api_admin.yaml
-│   └── services.yaml
-├── migrations/
-├── src/
-│   ├── Controller/
-│   │   ├── Api/
+├── api/                              # Symfony Backend
+│   ├── config/
+│   │   ├── packages/
+│   │   │   ├── doctrine.yaml
+│   │   │   ├── lexik_jwt_authentication.yaml
+│   │   │   ├── mercure.yaml
+│   │   │   ├── messenger.yaml
+│   │   │   └── security.yaml
+│   │   ├── routes/
+│   │   │   ├── api_operators.yaml
+│   │   │   ├── api_clients.yaml
+│   │   │   └── api_admin.yaml
+│   │   └── services.yaml
+│   ├── migrations/
+│   ├── src/
+│   │   ├── Controller/Api/
 │   │   │   ├── AuthController.php
 │   │   │   ├── OperatorController.php
 │   │   │   ├── ClientController.php
@@ -315,52 +330,87 @@ teleops-scheduler/
 │   │   │   ├── ShiftController.php
 │   │   │   ├── SessionController.php
 │   │   │   └── AdminController.php
-│   ├── Entity/
-│   │   ├── Operator.php
-│   │   ├── ClientOrganization.php
-│   │   ├── ClientUser.php
-│   │   ├── Site.php
-│   │   ├── Robot.php
-│   │   ├── Job.php
-│   │   ├── Shift.php
-│   │   ├── Session.php
-│   │   └── ...
-│   ├── Repository/
-│   ├── Service/
-│   │   ├── Registration/
-│   │   ├── Matching/
-│   │   │   ├── SkillMatchingService.php
-│   │   │   ├── AvailabilityMatchingService.php
-│   │   │   ├── LatencyMatchingService.php
-│   │   │   └── MatchingService.php
-│   │   ├── Scheduling/
-│   │   │   ├── ShiftGenerationService.php
-│   │   │   ├── ShiftAssignmentService.php
-│   │   │   └── EmergencyCoverageService.php
-│   │   ├── Session/
-│   │   │   ├── SessionService.php
-│   │   │   ├── HeartbeatService.php
-│   │   │   └── HandoffService.php
-│   │   └── Notification/
-│   ├── Security/
-│   │   ├── Voter/
-│   │   └── UserProvider/
-│   ├── Message/
-│   │   └── Handler/
-│   ├── Command/
-│   │   ├── HeartbeatMonitorCommand.php
-│   │   ├── ShiftReminderCommand.php
-│   │   └── AutoAssignCommand.php
-│   └── EventSubscriber/
-├── templates/
-│   └── email/
-├── tests/
-│   ├── Unit/
-│   ├── Integration/
-│   └── Functional/
+│   │   ├── Entity/
+│   │   ├── Repository/
+│   │   ├── Service/
+│   │   ├── Security/
+│   │   ├── Message/
+│   │   ├── Command/
+│   │   └── EventSubscriber/
+│   ├── templates/email/
+│   ├── tests/
+│   │   ├── Unit/
+│   │   ├── Integration/
+│   │   └── Functional/
+│   ├── composer.json
+│   └── phpunit.xml
+│
+├── frontend/                         # Vue.js Frontend
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   │   ├── common/
+│   │   │   │   ├── AppHeader.vue
+│   │   │   │   ├── AppSidebar.vue
+│   │   │   │   └── LoadingSpinner.vue
+│   │   │   ├── auth/
+│   │   │   │   ├── LoginForm.vue
+│   │   │   │   └── RegisterForm.vue
+│   │   │   ├── operator/
+│   │   │   │   ├── SkillManager.vue
+│   │   │   │   ├── AvailabilityCalendar.vue
+│   │   │   │   ├── ShiftList.vue
+│   │   │   │   └── SessionControl.vue
+│   │   │   ├── client/
+│   │   │   │   ├── SiteManager.vue
+│   │   │   │   ├── RobotManager.vue
+│   │   │   │   ├── JobPostingForm.vue
+│   │   │   │   └── CoverageSchedule.vue
+│   │   │   └── admin/
+│   │   │       ├── Dashboard.vue
+│   │   │       ├── UserManagement.vue
+│   │   │       └── AlertsPanel.vue
+│   │   ├── composables/
+│   │   │   ├── useAuth.ts
+│   │   │   ├── useApi.ts
+│   │   │   └── useWebSocket.ts
+│   │   ├── router/
+│   │   │   └── index.ts
+│   │   ├── stores/
+│   │   │   ├── auth.ts
+│   │   │   ├── operator.ts
+│   │   │   ├── client.ts
+│   │   │   └── shifts.ts
+│   │   ├── services/
+│   │   │   ├── api.ts
+│   │   │   ├── auth.service.ts
+│   │   │   ├── operator.service.ts
+│   │   │   ├── client.service.ts
+│   │   │   └── shift.service.ts
+│   │   ├── types/
+│   │   │   └── index.ts
+│   │   ├── views/
+│   │   │   ├── HomeView.vue
+│   │   │   ├── LoginView.vue
+│   │   │   ├── RegisterView.vue
+│   │   │   ├── operator/
+│   │   │   ├── client/
+│   │   │   └── admin/
+│   │   ├── App.vue
+│   │   └── main.ts
+│   ├── tests/
+│   │   ├── unit/
+│   │   └── e2e/
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── vitest.config.ts
+│   └── tsconfig.json
+│
 ├── docker/
 │   ├── docker-compose.yml
-│   └── Dockerfile
+│   ├── api.Dockerfile
+│   └── frontend.Dockerfile
 └── README.md
 ```
 
