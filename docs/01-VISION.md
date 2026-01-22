@@ -67,7 +67,7 @@ Build a **global teleoperation scheduling engine** - the "Uber for robot operato
 
 ### Technical
 - **Framework**: Symfony 7.x (PHP 8.3+)
-- **Database**: PostgreSQL (time-series data, complex scheduling queries)
+- **Database**: mySQL (time-series data, complex scheduling queries)
 - **Cache**: Redis (real-time session state, availability lookups)
 - **Queue**: Symfony Messenger with Redis transport
 - **API**: REST + WebSocket for real-time updates

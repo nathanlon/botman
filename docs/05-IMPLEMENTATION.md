@@ -13,16 +13,16 @@
 
 ## Technology Stack
 
-|Component|Technology               |Notes                       |
-|---------|-------------------------|----------------------------|
-|Framework|Symfony 7.x              |PHP 8.3+                    |
-|Database |PostgreSQL 16            |Complex queries, time-series|
-|Cache    |Redis 7                  |Sessions, real-time state   |
+|Component|Technology            |Notes                       |
+|---------|----------------------|----------------------------|
+|Framework|Symfony 7.x           |PHP 8.3+                    |
+|Database |mySQL            |Complex queries, time-series|
+|Cache    |Redis 7               |Sessions, real-time state   |
 |Queue    |Symfony Messenger + Redis|Async processing            |
-|WebSocket|Mercure                  |Native Symfony integration  |
-|Auth     |LexikJWT                 |API token auth              |
-|Email    |Symfony Mailer           |Start SMTP, upgrade later   |
-|API Docs |NelmioApiDoc             |OpenAPI spec generation     |
+|WebSocket|Mercure               |Native Symfony integration  |
+|Auth     |LexikJWT              |API token auth              |
+|Email    |Symfony Mailer        |Start SMTP, upgrade later   |
+|API Docs |NelmioApiDoc          |OpenAPI spec generation     |
 
 -----
 
@@ -35,7 +35,7 @@ Foundation infrastructure and user registration.
 |Task ID|Feature|Task                                                   |Estimate|Depends On        |
 |-------|-------|-------------------------------------------------------|--------|------------------|
 |T1.1   |Setup  |Initialize Symfony project, configure Docker           |4h      |-                 |
-|T1.2   |Setup  |Configure PostgreSQL, Redis connections                |2h      |T1.1              |
+|T1.2   |Setup  |Configure mySQL, Redis connections                |2h      |T1.1              |
 |T1.3   |Setup  |Set up Mercure for WebSockets                          |3h      |T1.1              |
 |T1.4   |F1     |Create Operator entity and migration                   |2h      |T1.2              |
 |T1.5   |F1     |Create OperatorRepository with base queries            |1h      |T1.4              |
