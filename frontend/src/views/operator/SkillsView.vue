@@ -17,7 +17,7 @@ onMounted(async () => {
 
 async function loadAvailableSkills() {
   try {
-    const response = await api.get('/skills')
+    const response = await api.get('/operator/skills/available')
     availableSkills.value = response.data.skills
   } catch (err) {
     console.error('Failed to load skills', err)
@@ -26,8 +26,10 @@ async function loadAvailableSkills() {
 
 async function addSkill() {
   if (!selectedSkillId.value) return
+  const levels = ['', 'beginner', 'beginner', 'intermediate', 'advanced', 'expert']
+  const proficiency = levels[proficiencyLevel.value] || 'intermediate'
   try {
-    await operatorStore.addSkill(selectedSkillId.value, proficiencyLevel.value)
+    await operatorStore.addSkill(selectedSkillId.value, proficiency)
     showAddModal.value = false
     selectedSkillId.value = 0
     proficiencyLevel.value = 3
@@ -44,6 +46,34 @@ async function removeSkill(id: number) {
 function getProficiencyLabel(level: number): string {
   const labels = ['', 'Beginner', 'Basic', 'Intermediate', 'Advanced', 'Expert']
   return labels[level] || ''
+}
+
+// Convert string proficiency level to display text
+function getProficiencyDisplay(level: string | number): string {
+  if (typeof level === 'number') {
+    return getProficiencyLabel(level)
+  }
+  const map: Record<string, string> = {
+    'beginner': 'Beginner',
+    'intermediate': 'Intermediate',
+    'advanced': 'Advanced',
+    'expert': 'Expert'
+  }
+  return map[level] || level
+}
+
+// Convert string proficiency level to percentage width
+function getProficiencyWidth(level: string | number): number {
+  if (typeof level === 'number') {
+    return level * 20
+  }
+  const map: Record<string, number> = {
+    'beginner': 25,
+    'intermediate': 50,
+    'advanced': 75,
+    'expert': 100
+  }
+  return map[level] || 50
 }
 </script>
 
@@ -69,19 +99,19 @@ function getProficiencyLabel(level: number): string {
     <div v-else class="skills-grid">
       <div v-for="skill in operatorStore.skills" :key="skill.id" class="skill-card">
         <div class="skill-header">
-          <h3>{{ skill.skillName }}</h3>
+          <h3>{{ skill.skillDefinition?.name || skill.skillName }}</h3>
           <button class="remove-btn" @click="removeSkill(skill.id)">×</button>
         </div>
-        <span class="category">{{ skill.category }}</span>
+        <span class="category">{{ skill.skillDefinition?.category || skill.category }}</span>
         <div class="proficiency">
           <div class="proficiency-bar">
             <div
               class="proficiency-fill"
-              :style="{ width: (skill.proficiencyLevel * 20) + '%' }"
+              :style="{ width: getProficiencyWidth(skill.proficiencyLevel) + '%' }"
             ></div>
           </div>
           <span class="proficiency-label">
-            {{ getProficiencyLabel(skill.proficiencyLevel) }}
+            {{ getProficiencyDisplay(skill.proficiencyLevel) }}
           </span>
         </div>
       </div>
